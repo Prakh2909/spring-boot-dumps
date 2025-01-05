@@ -152,17 +152,15 @@ Configuration: for handling configurations. present in application.configuration
 
 ![Alt Text](images/maven-lifecycle.png)
 
+1. validate: validates the code before compiling. Maven does't restrict anything here but we can add goals. Like validating code style, formatting etc.
+2. compile: converts the java code to bytecode. .class files. Puts the bytecode into target/classes.
+3. test: runs the test cases of the project in src/test
+4. package: package compiled code into JAR(.jar) or WAR(.war).
+5. verify: check the integrity of the package. Maven does't restrict anything here but we can add goals. like PMD source code analyzer.
+6. install: Installs the .jar package into local repository. typically located in (~/.m2/repository). We can change the path in /.m2/settings.xml file.
+7. deploy: Installs the .jar package into remote repository. We can provide the repo url in the pom file and private repo we can put username & password in settings.xml. If we try to run deploy without providing the url we will see the error.
 
+Note: If we want to deploy the manifest to maven central repository we can use: https://repo.maven.apache.org/maven2/. Since its public we dont need username and password.
 
-validate: validates the code before compiling. Maven does't restrict anything here but we can add goals. Like validating code style, formatting etc.
-compile: converts the java code to bytecode. .class files. Puts the bytecode into target/classes.
-test: runs the test cases of the project in src/test
-package: package compiled code into JAR(.jar) or WAR(.war).
-verify: check the integrity of the package. Maven does't restrict anything here but we can add goals. like PMD source code analyzer.
-install: Installs the .jar package into local repository. typically located in (~/.m2/repository). We can change the path in /.m2/settings.xml file.
-deploy: Installs the .jar package into remote repository. We can provide the repo url in the pom file and private repo we can put username & password in settings.xml. If we try to run deploy without providing the url we will see the error.
-
-If we want to deploy the manifest to maven central repository we can use: https://repo.maven.apache.org/maven2/. Since its public we dont need username and password.
-
-To configure remote repo:
+Note: To configure remote repo:
 ![Alt text](images/remote-repo-config.png)
