@@ -46,7 +46,7 @@ Spring boot solves challenges which exists in Spring MVC. It provides a quick wa
 - Click on Generate and import the folder in any IDE like VSCode or IntelliJ
 
 ## Layered Architecture
-Most companies prefer this kinda architecure for their applications
+Most companies prefer this kinda architecture for their applications
 ![Alt text](images/architecture.png)
 
 Controller Layer: handles all the controllers. Classes which host endpoints. having @Controller  / @RestController
@@ -164,3 +164,89 @@ Note: If we want to deploy the manifest to maven central repository we can use: 
 
 Note: To configure remote repo:
 ![Alt text](images/remote-repo-config.png)
+
+## Spring Boot Annotations
+
+- @SpringBootApplication
+- @Controller - indicates that this class is responsible for handling incoming HTTP requests.
+- @RestController - @Controller + @ResponseBody (no need to use the @ResponseBody annotation explicitly)
+- @ResponseBody - tells the controller to consider the return type should be considered as HTTP response. Creates ResponseEntity internally for response.
+- @RequestMapping - to map the request like path, method etc. We can also write this at the class level for common paths.
+	- @GetMapping - Request mathod is already defined in this
+	- @PostMapping - Request mathod is already defined in this
+
+- @RequestParam - Used to bind, request parameter to controller method parameter. Framework automatically performs type conversion from the request parameter's string representation to the specified type. We can also use Custom object type to do some custom type casting using @InitBinder
+![Alt text](images/request-param-annotation.png)
+
+![Alt text](images/custom-editor.png)
+
+- @PathVariable - for extracting path variables
+![Alt text](images/path-variable.png)
+
+- @RequestBody - bind the body of the HTTP request(typically JSON) to controller method parameter(Java object). Use same name in class variable as there is in JSON. if not we can bind them by using @JsonPoperty("").
+![alt text](images/request-body.png)
+
+- @ResponseEntity - it represents the entire HTTP response. Contains body, http codes, headers etc.
+![alt text](images/response-entity.png)
+
+## Bean and its lifecycle
+- Bean is a Java object which is managed by spring containers aka IOC containers.
+- IOC containers - contains all the beans which get created and manage them.
+- How to create a bean - @Component or @Bean
+
+### @Component
+- follows convention over configuration approach.
+- Spring boot will try to autoconfigure reducing the need for explicit configuration.
+- @Controller, @Service etc all internally tells spring to create the bean and manage it.
+![](images/component.png)
+
+### @Bean
+- used when we need to specify configuration details and tell spring to use it when creating bean. In the case below we are using a parameterised contructor instead of a default one. So we need to provide extra configs.
+![](images/bean-annotation.png)
+
+
+#### How spring boot find these beans?
+1. Using @ComponentScan annotations, it will scan the specified packages and sub-packages for classes annotated with @Component, @Service etc. Bydefault @SpringBootApplication also has ComponentScan in it.
+
+2. Through explicitly defining bean via @Bean in @Configuration class.
+
+#### At what time, does the beans get created?
+1. Eager initialization - as soon as we startup the application. Example - beans with singleton scope.
+2. Lazy initialization - when they are actually needed. Example - beans with prototype scope. or with @Lazy annotation
+
+
+### Lifecycle of a Bean
+
+![](images/bean-life-cycle.png)
+ 
+refer to the link for more details: https://notebook.zohopublic.in/public/notes/bietv2018487e1de84b009904a4dfeda24def
+
+## Dependency Injection
+- It helps to remove the dependency on concrete implementation and inject the dependencies from external sources.
+- it is a programming technique that allows objects to receive the objects or functions they need from an outside source, instead of creating them internally. This technique is used to reduce hardcoded dependencies between objects and can lead to cleaner, more flexible code. 
+- refer to the link for more details: https://notebook.zohopublic.in/public/notes/bietv964a637b52be4a1bbfde8d0309040a79
+## Bean Scope:
+- Singleton
+	- Default scope
+	- only 1 instance created per IOC.
+	- Eagerly initialized by IOC (means at the time of startup application gets created).
+	- @Scope("singleton") and @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+- Prototype
+	- Each time a new object is created
+	- Its lazy initialised, object is created only when it is required.
+- Request
+	- New Object is created for each HTTP request, unlike Prototype it wont be created everytime it is injected.
+	- Lazy initialization
+- Session
+	- New Object is created for each HTTP session.
+	- Lazy initialized
+	- When user accesses any endpoint session is created
+	- remains active till it does not get expired.
+- Application
+	- When we need to share the single object between multiple IOC containers unlike singleton in one one IOC container.
+
+Note: What happens when we inject a depenency with Request scope into a class with singleton scope. Since there is no HTTP request at the time of startup it will run into an error.
+- Solution To resolve this we will need to use proxyMode which helps in providing a proxy object during startup. It wont be initialised like its contructor and postConstruct wont be called but somehow a dummy object will be injected.
+- @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+
+refer to the link for more details: https://notebook.zohopublic.in/public/notes/bietv379bff087eca47eaa84a3024d7e14b46
