@@ -286,3 +286,39 @@ refer to the link for more details: https://notebook.zohopublic.in/public/notes/
 	- Advice - Tells the spring what to do and when. @Before, @After or @Around
 - refer to the link for more details: https://notebook.zohopublic.in/public/notes/dcr5z12bd30d9fbc2454e9881904115682227
 
+## TRANSACTIONS
+- In spring boot we can achieve the TRANSACTION property via @Transactional annotation
+- Before starting go through the below Pre-study to gain more insights.
+### Pre-study - Consurrency control in distributed systems
+- one way is to use SYNCHRONIZED for critical resources when there is a single process with multiple threads but what in case of districuted systems.
+- For Distributed systems
+	1. Optimistic Concurrency Control- 
+		- Uses REPEATABLE READ Isolation levels. having higher concurrency.
+		- No deadlocks as this maintains version.
+		- We can also rollback and retry in case of conflict
+	2. Pessimistic Concurrency Control
+		- Isolation level REPEATABLE READ and SERIALIZABLE. Less concurrency compared to optimistic
+		- Deadlock possible, will need to rollback if it happens
+		- Timeout issues possible in case of long running lock in a single transaction.
+- Transaction helps us to achieve Integrity. and helps us to avoid inconsistency in our DB. If all success we COMMIT or else we ROLLBACK.
+- DB Locking helps use to make sure no other transaction update the locked row which is being used in some other transaction.
+	- Shared lock - read lock
+	- Exclusive lock - write lock
+- Isolation levels - find below. As we go down the concurrency level decreases
+![Alt text](images/isolation-levels.png)
+![Alt text](images/isolation-locking-strategy.png)
+	
+	- Dirty Read - If transaction A reads the data which is being written by Transaction B but not yet committed and somehow B has to rollback. then whatever the data A has will be called dirty read.
+	- Non-Repeatable read- If A reads the same row several time and there is a chance that it reads a different value. might have been changes by some other transaction before A completed.
+	- Phantom read - if A executes same query several time and there is a change that rows returned are different.
+
+### @Transactional
+- helps in achieving Transaction Management.
+- We will need to add dependency in the pom file and configuration file.
+- We can activate Transaction Management by using @EnableTransactionManagement in the main class(spring boot generally auto configures it)
+- Ways to use @Transactional
+	1. At class level: Transaction applied to all the public methods only.
+	2. At Method level: Transaction applied to particular method only.
+- internally @Transactional uses AOP. It handles all the duplicate code. which is maintaining Transaction levels.
+	- Uses point cut to find the methods and classes with @Transactional annotations
+	- Runs Around type Advice
