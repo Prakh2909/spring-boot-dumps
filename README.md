@@ -68,7 +68,7 @@ Configuration: for handling configurations. present in application.configuration
 - When maven command is executed, it looks for "pom.xml" in the current directory and gets needed configurations.
 - In Maven we generally need to tell What to do and it knows how to do.
 - Before maven, Ant was popular but there we need to tell it what to do adn how to do.
-
+- refer to this for more details: https://notebook.zohopublic.in/public/notes/bietv1d00e57bcbca4be89f155f6039985778
 ### Project Structure for maven
 ![Alt Text](images/maven.png)
 
@@ -189,6 +189,8 @@ Note: To configure remote repo:
 - @ResponseEntity - it represents the entire HTTP response. Contains body, http codes, headers etc.
 ![alt text](images/response-entity.png)
 
+- refer to this for more details - https://notebook.zohopublic.in/public/notes/bietv0de3bac30fbd41e7b1346bf9243ad3b2
+
 ## Bean and its lifecycle
 - Bean is a Java object which is managed by spring containers aka IOC containers.
 - IOC containers - contains all the beans which get created and manage them.
@@ -250,3 +252,37 @@ Note: What happens when we inject a depenency with Request scope into a class wi
 - @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 
 refer to the link for more details: https://notebook.zohopublic.in/public/notes/bietv379bff087eca47eaa84a3024d7e14b46
+
+
+## Unsatisfied Dependency Problem
+- Problem statement: single interface having multiple implementation each serving as a bean, when injecting the dependency of that bean, now spring is confused which one to call. Application will fail to start.
+-  1st Solution: Using @Qualifier("alias") on both the implementation by providing an alias name, and add this same @Qualifier with Autowired, making it a hard wired/ tight coupling.
+- Standard Dynamic Solution 1: inject both the implementation with the alias and in the logic choose which one you want. 
+- Dynamic Solution 2: Take the input from the configuration file using @Value annotation which gets the values from application.properties/configs.
+
+refer to the link for more details: https://notebook.zohopublic.in/public/notes/bietv13e5f5aeff684305a86e2d251aa4deed
+
+## @ConditionalOnProperty Annotation
+- Bean is created conditionally (bean might or might not be created).
+- refer to the link for more details: https://notebook.zohopublic.in/public/notes/dcr5z97c7e76aa1454ea6a57e1a2dde4f8785
+
+
+## Spring boot Profiles
+- Spring Profiles provide a way to segregate parts of your application configuration and make them available only in certain environments. This allows you to have different configurations for different environments, such as development, testing, and production.
+- application-dev.properties like this way we can provide configs for each environment. 
+- spring.profile.active=dev/qa/prod/..  via this way we can tell spring which config to use during startup. We need to put this in default config file.
+- dynamically mvn spring-boot:run -Dspring-boot.run.profiles=prod
+- or we can add in pom.xml using profiles and use the below command 
+- mvn spring-boot:run -Pproduction
+- We can use @Profile("prod") to any bean and will be initialised only if that profile is set.
+- We can also set multiple profiles at a time in default properties file.
+- refer to the link for more details: https://notebook.zohopublic.in/public/notes/dcr5ze84495de6ad14cadbf5fe38b99b18b9d
+
+
+## AOP (Aspect oriented Programming)
+- Spring AOP module has some useful features like it provides interceptors to intercept an application. For example, when a method is executed in a system, then you can also add extra features and functionality before or after the method has been executed.
+- For this aspect we need to provide the below items
+	- Pointcut - Tells the spring where to look
+	- Advice - Tells the spring what to do and when. @Before, @After or @Around
+- refer to the link for more details: https://notebook.zohopublic.in/public/notes/dcr5z12bd30d9fbc2454e9881904115682227
+
